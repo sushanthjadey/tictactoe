@@ -1,0 +1,156 @@
+<div class="page">
+  <div class="container">
+    <header class="header">
+      <h1>Tic Tac Toe</h1>
+      <p>Angular 21 + .NET Web API</p>
+    </header>
+
+    <div class="mode-selector">
+      <button
+        type="button"
+        [class.active]="selectedMode === 'TwoPlayer'"
+        [disabled]="isMakingMove"
+        (click)="selectMode('TwoPlayer')">
+        Two Player
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedMode === 'Computer'"
+        [disabled]="isMakingMove"
+        (click)="selectMode('Computer')">
+        Play Against Computer
+      </button>
+    </div>
+
+    @if (game; as currentGame) {
+      <div
+        class="status"
+        [class.winner]="currentGame.status === 'Won'"
+        [class.draw]="currentGame.status === 'Draw'">
+        @switch (currentGame.status) {
+          @case ('InProgress') {
+            Player {{ currentGame.currentPlayer }}'s turn
+          }
+
+          @case ('Won') {
+            🎉 Player {{ currentGame.winner }} wins!
+          }
+
+          @case ('Draw') {
+            🤝 Game Draw!
+          }
+        }
+      </div>
+
+      @if (errorMessage) {
+        <div class="error">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <div class="game-layout">
+        <section class="game-card">
+          <div class="board">
+            @for (cell of currentGame.board; track $index) {
+              <button
+                type="button"
+                class="cell"
+                [class.x]="cell === 'X'"
+                [class.o]="cell === 'O'"
+                [class.winning]="currentGame.winningCells.includes($index)"
+                [disabled]="isMakingMove || cell !== '' || currentGame.status !== 'InProgress'"
+                (click)="onCellClicked($index)">
+                {{ cell }}
+              </button>
+            }
+          </div>
+
+          <div class="actions">
+            <button
+              type="button"
+              class="primary"
+              [disabled]="isResetting"
+              (click)="resetGame()">
+              {{ isResetting ? 'Resetting...' : 'Reset Game' }}
+            </button>
+
+            <button
+              type="button"
+              [disabled]="
+                isMakingMove ||
+                currentGame.moveHistory.length === 0 ||
+                currentGame.status !== 'InProgress'
+              "
+              (click)="undo()">
+              Undo Last Move
+            </button>
+          </div>
+
+          <div class="game-id">
+            Game ID: {{ currentGame.gameId }}
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <section class="card">
+            <h2>Scoreboard</h2>
+
+            <div class="scoreboard">
+              <div class="score">
+                <span class="value">{{ scoreboard.xWins }}</span>
+                <span class="label">X Wins</span>
+              </div>
+
+              <div class="score">
+                <span class="value">{{ scoreboard.oWins }}</span>
+                <span class="label">O Wins</span>
+              </div>
+
+              <div class="score">
+                <span class="value">{{ scoreboard.draws }}</span>
+                <span class="label">Draws</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="danger"
+              (click)="resetScoreboard()">
+              Reset Scoreboard
+            </button>
+          </section>
+
+          <section class="card">
+            <h2>Move History</h2>
+
+            @if (currentGame.moveHistory.length === 0) {
+              <p class="empty">
+                No moves yet.
+              </p>
+            } @else {
+              <div class="history">
+                @for (move of currentGame.moveHistory; track move.number) {
+                  <div class="history-row">
+                    <span>{{ move.number }}</span>
+
+                    <strong
+                      [class.x]="move.player === 'X'"
+                      [class.o]="move.player === 'O'">
+                      {{ move.player }}
+                    </strong>
+
+                    <span>
+                      Row {{ move.row + 1 }},
+                      Column {{ move.column + 1 }}
+                    </span>
+                  </div>
+                }
+              </div>
+            }
+          </section>
+        </aside>
+      </div>
+    }
+  </div>
+</div>

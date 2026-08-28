@@ -1,0 +1,26 @@
+<div class="board">
+
+  @for (
+    cell of game().board;
+    track $index;
+  ) {
+
+    <button
+      type="button"
+      class="cell"
+      [class.winning]="
+        isWinningCell($index)
+      "
+      [disabled]="
+        isDisabled($index)
+      "
+      (click)="
+        onCellClick($index)
+      "
+    >
+      {{ cell }}
+    </button>
+
+  }
+
+</div>
