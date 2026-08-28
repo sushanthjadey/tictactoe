@@ -2,10 +2,10 @@ using TicTacToe.Api.Models.GameModels;
 
 namespace TicTacToe.Api.Services;
 
-public class GameService
+public class GameService: IGameService
 {
     private readonly Dictionary<Guid, GameState> games = [];
-    private readonly ScoreboardService scoreboard;
+    private readonly IScoreboardService scoreboard;
 
     private static readonly int[][] WinningLines =
     {
@@ -21,13 +21,61 @@ public class GameService
         [2, 4, 6]
     };
 
-    public GameService(ScoreboardService scoreboard)
+    public GameService(IScoreboardService scoreboard)
     {
         this.scoreboard = scoreboard;
     }
 
-    // Create Game
-    public GameState Create(GameMode mode)
+
+    GameState IGameService.Create(GameMode mode)
+    {
+        return Create(mode);
+    }
+
+    GameState IGameService.Get(Guid id)
+    {
+        return Get(id);
+    }
+
+    GameState IGameService.MakeMove(Guid id, MoveRequest request)
+    {
+        var game = Get(id);
+
+        ValidateMove(game, request);
+
+        ApplyMove(
+            game,
+            request.Player,
+            request.Row,
+            request.Column);
+
+        if (game.Mode == GameMode.Computer &&
+            game.Status == GameStatus.InProgress &&
+            game.CurrentPlayer == "O")
+        {
+            int computerMove =  GetComputerMove(game);
+
+            if (computerMove != -1)
+            {
+                int row = computerMove / 3;
+                int column = computerMove % 3;
+
+                ApplyMove(game, "O", row, column);
+            }
+        }
+
+        return game;
+    }
+
+    private GameState Get(Guid id)
+    {
+        if (!games.ContainsKey(id))
+            throw new KeyNotFoundException("Game not found.");
+
+        return games[id];
+    }
+    
+    private GameState Create(GameMode mode)
     {
         var game = new GameState
         {
@@ -42,63 +90,7 @@ public class GameService
 
         return game;
     }
-
-    // Get Game
-    public GameState Get(Guid id)
-    {
-        if (!games.ContainsKey(id))
-            throw new KeyNotFoundException("Game not found.");
-
-        return games[id];
-    }
-
-    // Make Move
-    public GameState MakeMove(
-        Guid id,
-        MoveRequest request)
-    {
-        var game = Get(id);
-
-        ValidateMove(game, request);
-
-        ApplyMove(
-            game,
-            request.Player,
-            request.Row,
-            request.Column);
-
-        /*
-         * Computer Mode:
-         * Human = X
-         * Computer = O
-         */
-        if (game.Mode == GameMode.Computer &&
-            game.Status == GameStatus.InProgress &&
-            game.CurrentPlayer == "O")
-        {
-            int computerMove =
-                GetComputerMove(game);
-
-            if (computerMove != -1)
-            {
-                int row = computerMove / 3;
-                int column = computerMove % 3;
-
-                ApplyMove(
-                    game,
-                    "O",
-                    row,
-                    column);
-            }
-        }
-
-        return game;
-    }
-
-    
-    private void ValidateMove(
-        GameState game,
-        MoveRequest request)
+    private static void ValidateMove(GameState game, MoveRequest request)
     {
         if (game.Status != GameStatus.InProgress)
             throw new InvalidOperationException(
@@ -125,19 +117,14 @@ public class GameService
             throw new InvalidOperationException(
                 "O is controlled by computer.");
 
-        int index =
-            request.Row * 3 + request.Column;
+        int index = request.Row * 3 + request.Column;
 
         if (game.Board[index] != "")
             throw new InvalidOperationException(
                 "Cell is already occupied.");
     }
 
-    private void ApplyMove(
-        GameState game,
-        string player,
-        int row,
-        int column)
+    private void ApplyMove(GameState game, string player, int row, int column)
     {
         int index = row * 3 + column;
 
@@ -167,9 +154,7 @@ public class GameService
             return;
         }
 
-        // Draw
-        if (game.Board.All(
-            cell => cell != ""))
+        if (game.Board.All(cell => cell != ""))
         {
             game.Status = GameStatus.Draw;
 
@@ -178,15 +163,10 @@ public class GameService
             return;
         }
 
-        // Change player
-        game.CurrentPlayer =
-            player == "X" ? "O" : "X";
+        game.CurrentPlayer =  player == "X" ? "O" : "X";
     }
 
-    // Win Detection
-
-    private int[]? FindWinningLine(
-        string[] board)
+    private int[]? FindWinningLine(string[] board)
     {
         foreach (var line in WinningLines)
         {
@@ -201,32 +181,21 @@ public class GameService
         return null;
     }
 
-    private int GetComputerMove(
-        GameState game)
+    private int GetComputerMove(GameState game)
     {
-        // 1. O can win
-        int winningMove =
-            FindTacticalMove(
-                game.Board,
-                "O");
+        int winningMove = FindTacticalMove(game.Board, "O");
 
         if (winningMove != -1)
             return winningMove;
 
-        // 2. Block X
-        int blockingMove =
-            FindTacticalMove(
-                game.Board,
-                "X");
+        int blockingMove = FindTacticalMove(game.Board, "X");
 
         if (blockingMove != -1)
             return blockingMove;
 
-        // 3. Center
         if (game.Board[4] == "")
             return 4;
 
-        // 4. Corner
         int[] corners =
         {
             0, 2, 6, 8
@@ -238,7 +207,6 @@ public class GameService
                 return corner;
         }
 
-        // 5. Any available cell
         for (int i = 0; i < 9; i++)
         {
             if (game.Board[i] == "")
@@ -248,9 +216,7 @@ public class GameService
         return -1;
     }
 
-    private int FindTacticalMove(
-        string[] board,
-        string player)
+    private int FindTacticalMove(string[] board, string player)
     {
         foreach (var line in WinningLines)
         {
@@ -276,15 +242,10 @@ public class GameService
         return -1;
     }
 
-    // Undo Move
     public GameState Undo(Guid id)
     {
         var game = Get(id);
 
-        /*
-         * Option A from problem statement:
-         * Undo is disabled after completion.
-         */
         if (game.Status != GameStatus.InProgress)
             throw new InvalidOperationException(
                 "Undo is disabled after game completion.");
@@ -293,29 +254,22 @@ public class GameService
             throw new InvalidOperationException(
                 "No moves to undo.");
 
-        int numberOfMoves =
-            game.Mode == GameMode.Computer
+        int numberOfMoves = game.Mode == GameMode.Computer
                 ? Math.Min(2, game.MoveHistory.Count)
                 : 1;
 
-        for (int i = 0;
-             i < numberOfMoves;
-             i++)
+        for (int i = 0; i < numberOfMoves; i++)
         {
-            var move =
-                game.MoveHistory[^1];
+            var move = game.MoveHistory[^1];
 
-            int index =
-                move.Row * 3 + move.Column;
+            int index =  move.Row * 3 + move.Column;
 
             game.Board[index] = "";
 
-            game.MoveHistory.RemoveAt(
-                game.MoveHistory.Count - 1);
+            game.MoveHistory.RemoveAt(game.MoveHistory.Count - 1);
         }
 
-        game.Status =
-            GameStatus.InProgress;
+        game.Status =  GameStatus.InProgress;
 
         game.Winner = null;
 
@@ -336,9 +290,7 @@ public class GameService
         return game;
     }
 
-    // Reset
-
-    public GameState Reset(Guid id)
+    GameState IGameService.Reset(Guid id)
     {
         var oldGame = Get(id);
 

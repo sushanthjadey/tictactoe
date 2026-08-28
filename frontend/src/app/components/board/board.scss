@@ -1,88 +1,80 @@
-$cell-size: 130px;
-$gap: 10px;
-
-$background: #f1f5f9;
-$hover-background: #e2e8f0;
-
-$primary: #2563eb;
-$success: #16a34a;
-
 .board {
   display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(80px, 1fr));
-
-  gap: $gap;
-
-  width: min(420px, 100%);
-  aspect-ratio: 1;
-
+  grid-template-columns: repeat(3, 80px);
+  grid-template-rows: repeat(3, 80px);
+  gap: 5px;
+  width: 250px;
+  height: 250px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .cell {
   display: flex;
-
   align-items: center;
   justify-content: center;
-
-  aspect-ratio: 1;
-
-  border: 2px solid transparent;
-  border-radius: 12px;
-
-  background: $background;
-
-  font-size: clamp(
-    2.5rem,
-    8vw,
-    5rem
-  );
-
-  font-weight: 800;
-
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  box-sizing: border-box;
+  border: 2px solid #dce3eb;
+  border-radius: 9px;
+  background: #fbfcfe;
+  color: #172033;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
   cursor: pointer;
-
-  transition:
-    background 150ms ease,
-    border-color 150ms ease,
-    transform 150ms ease;
-
-  &:hover:not(:disabled) {
-    background: $hover-background;
-
-    border-color: $primary;
-
-    transform: scale(1.02);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-  }
-
-  &.winning {
-    background: #dcfce7;
-
-    border-color: $success;
-
-    color: $success;
-
-    animation: winner-pulse 600ms ease;
-  }
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-@keyframes winner-pulse {
+.cell:hover:not(:disabled) {
+  border-color: #93c5fd;
+  background: #f5f9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.08);
+}
 
-  0% {
-    transform: scale(1);
+.cell:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.cell:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell.x {
+  color: #2563eb;
+}
+
+.cell.o {
+  color: #ef4444;
+}
+
+.cell.winning {
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #15803d;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.08);
+}
+
+@media (max-width: 350px) {
+  .board {
+    grid-template-columns: repeat(3, 72px);
+    grid-template-rows: repeat(3, 72px);
+    width: 226px;
+    height: 226px;
+    gap: 5px;
   }
 
-  50% {
-    transform: scale(1.05);
-  }
-
-  100% {
-    transform: scale(1);
+  .cell {
+    width: 72px;
+    height: 72px;
+    font-size: 34px;
   }
 }

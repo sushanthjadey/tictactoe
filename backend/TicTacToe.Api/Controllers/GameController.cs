@@ -8,25 +8,21 @@ namespace TicTacToe.Api.Controllers;
 [Route("api/games")]
 public class GamesController : ControllerBase
 {
-    private readonly GameService gameService;
+    private readonly IGameService gameService;
 
-    public GamesController(
-        GameService gameService)
+    public GamesController(IGameService game)
     {
-        this.gameService = gameService;
+        this.gameService = game;
     }
 
     [HttpPost]
-    public ActionResult<GameState> Create(
-        CreateGameRequest request)
+    public ActionResult<GameState> Create(CreateGameRequest request)
     {
-        return Ok(
-            gameService.Create(request.Mode));
+        return Ok(gameService.Create(request.Mode));
     }
 
     [HttpGet("{id:guid}")]
-    public ActionResult<GameState> Get(
-        Guid id)
+    public ActionResult<GameState> Get(Guid id)
     {
         try
         {
@@ -39,58 +35,45 @@ public class GamesController : ControllerBase
     }
 
     [HttpPost("{id:guid}/moves")]
-    public ActionResult<GameState> Move(
-        Guid id,
-        MoveRequest request)
+    public ActionResult<GameState> Move(Guid id, MoveRequest request)
     {
         try
         {
-            return Ok(
-                gameService.MakeMove(
-                    id,
-                    request));
+            return Ok(gameService.MakeMove(id, request));
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(
-                new { message = ex.Message });
+            return NotFound(new { message = ex.Message });
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(
-                new { message = ex.Message });
+            return BadRequest(new { message = ex.Message });
         }
     }
 
     [HttpPost("{id:guid}/undo")]
-    public ActionResult<GameState> Undo(
-        Guid id)
+    public ActionResult<GameState> Undo(Guid id)
     {
         try
         {
-            return Ok(
-                gameService.Undo(id));
+            return Ok(gameService.Undo(id));
         }
         catch (Exception ex)
         {
-            return BadRequest(
-                new { message = ex.Message });
+            return BadRequest(new { message = ex.Message });
         }
     }
 
     [HttpPost("{id:guid}/reset")]
-    public ActionResult<GameState> Reset(
-        Guid id)
+    public ActionResult<GameState> Reset(Guid id)
     {
         try
         {
-            return Ok(
-                gameService.Reset(id));
+            return Ok(gameService.Reset(id));
         }
         catch (Exception ex)
         {
-            return BadRequest(
-                new { message = ex.Message });
+            return BadRequest(new { message = ex.Message });
         }
     }
 }

@@ -1,11 +1,18 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Move } from '../../models/game.model';
 
 @Component({
   selector: 'app-move-history',
-  imports: [],
+  standalone: true,
   templateUrl: './move-history.html',
-  styleUrl: './move-history.css',
+  styleUrl: './move-history.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MoveHistory {
+export class MoveHistoryComponent {
+  readonly moves = input.required<Move[]>();
+  readonly undoClicked = output<void>();
 
+  onUndo(): void {
+    this.undoClicked.emit();
+  }
 }

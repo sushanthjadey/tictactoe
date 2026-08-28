@@ -8,12 +8,11 @@ namespace TicTacToe.Api.Controllers;
 [Route("api/scoreboard")]
 public class ScoreboardController : ControllerBase
 {
-    private readonly ScoreboardService scoreboard;
+    private readonly IScoreboardService scoreboard;
 
-    public ScoreboardController(
-        ScoreboardService scoreboard)
+    public ScoreboardController(IScoreboardService scoreboardservice)
     {
-        this.scoreboard = scoreboard;
+        this.scoreboard = scoreboardservice;
     }
 
     [HttpGet]
@@ -27,7 +26,6 @@ public class ScoreboardController : ControllerBase
     {
         scoreboard.Reset();
 
-        return Ok(
-            scoreboard.Get());
+        return Ok(scoreboard.Get());
     }
 }
