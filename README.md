@@ -1,283 +1,866 @@
-# tictactoe
-TicTacToe Game
-Problem Statement
-•	Build a browser-based Tic Tac Toe application with an Angular frontend and a .NET backend running locally.
-•	The application should allow users to play Tic Tac Toe, track moves, undo moves, maintain a scoreboard, and support a basic computer opponent mode.
+# Tic Tac Toe – Round 2
 
-The solution should be easy for the panel to run, review, and discuss.
-________________________________________
-Technology Expectations
-Use the following stack:
-o	Frontend: Angular + TypeScript 
-o	Backend: .NET Web API 
-o	API Style: REST API 
-o	Storage: In-memory storage is acceptable; SQLite may be used if preferred 
-o	Source Control: GitHub 
-The Angular application should communicate with the .NET backend through REST APIs.
-The backend should manage the game session and scoreboard state.
-________________________________________
-Functional Requirements
-1. Game Board
-•	Create a standard 3 × 3 Tic Tac Toe board.
-o	Each cell should be clickable when it is empty.
-o	Once a move is made, the selected cell should display either X or O.
-o	A selected cell should remain locked for the rest of the current game state.
-________________________________________
-2. Player Turns
-•	The game should support two players:
-•	Player X 
-•	Player O 
-•	The application should clearly display whose turn it is.
-•	Players should alternate turns after every valid move.
-•	Invalid moves should not change the current turn.
-________________________________________
-3. Win Detection
-•	The application should detect a winner when a player completes:
-•	One full row 
-•	One full column 
-•	One diagonal 
-•	When a player wins, the application should:
-•	Show the winning player 
-•	Highlight the winning cells 
-•	Prevent additional moves for the completed game 
-•	Update the scoreboard 
-________________________________________
-4. Draw Detection
-•	If all 9 cells are filled and there is no winner, the game should be marked as a draw.
-•	When the game is drawn, the application should:
-•	Show a draw message 
-•	Prevent additional moves for the completed game 
-•	Update the scoreboard 
-________________________________________
-5. Reset Game
-•	Provide a Reset Game option. Reset Game should:
-•	Clear the current board 
-•	Clear the move history 
-•	Clear winner or draw status 
-•	Set the current player back to X 
-•	Start a fresh game session 
-•	Keep the scoreboard unchanged 
-________________________________________
-Must-Have 
-1. Move History
-•	The application should display move history for the current game.
-•	For each move, show:
-•	Move number 
-•	Player 
-•	Cell position 
-•	Example:
-Move	Play-er	Position
-1	X	Row 1, Column 1
-2	O	Row 2, Column 2
-•	The move history should update after every valid move.
-________________________________________
-2. Undo Last Move
-•	Provide an Undo Last Move option.
-•	Undo should restore the game to the previous valid state.
-•	Undo should:
-•	Remove the latest move or move pair based on the selected game mode 
-•	Restore the board 
-•	Restore the correct player turn 
-•	Recalculate win or draw status 
-•	Keep the move history accurate 
-•	Undo should be disabled when there are no moves to undo.
-Undo Behavior by Mode
-•	In Two Player Mode, Undo should remove only the most recent move.
-•	Example:
-•	X plays 
-•	O plays 
-•	User clicks Undo 
-•	O’s move is removed 
-•	It is O’s turn again 
-•	In Computer Mode, Undo should remove the computer’s last move and the human player’s previous move together.
-•	Example:
-•	X plays 
-•	O computer plays 
-•	User clicks Undo 
-•	Both O’s move and the previous X move are removed 
-•	It is X’s turn again 
-________________________________________
-3. Scoreboard
-•	Maintain a session-level scoreboard.
-•	Track:
-•	X wins 
-•	O wins 
-•	Draws 
-•	The scoreboard should update when a game is completed.
-•	The scoreboard should update only once for a completed game.
-•	Reset Game should keep the scoreboard unchanged.
-•	Provide a separate Reset Scoreboard option.
-•	The scoreboard should be served by the backend.
-________________________________________
-4. Basic Computer Mode
-Provide two game modes:
-1.	Two Player Mode 
-2.	Play Against Computer 
-•	In Two Player Mode, both X and O are controlled by users.
-•	In Computer Mode:
-•	Human player is X 
-•	Computer player is O 
-•	Computer should make a move automatically after the human move 
-•	Computer should make only valid moves 
-•	Computer should not move after the game is already completed 
-•	The computer move logic should follow this priority:
-1.	If O can win, play the winning move 
-2.	If X can win next, block X 
-3.	Take center if available 
-4.	Take a corner if available 
-5.	Take any available cell 
-________________________________________
-Backend Requirements
-•	The .NET backend should expose REST APIs for game operations.
-•	The backend should own the game session state, move history, game status, and scoreboard.
-Suggested API Scope
-Meth-od	Endpoint	Purpose
-POST	/api/games	Create a new game ses-sion
-GET	/api/games/{id}	Get current game state
-POST	/api/games/{id}/moves	Submit a player move
-POST	/api/games/{id}/undo	Undo last move
-POST	/api/games/{id}/reset	Reset the current game
-GET	/api/scoreboard	Get scoreboard
-POST	/api/scoreboard/reset	Reset scoreboard
-•	The exact endpoint names can vary, but the submitted solution should clearly document the API contract.
-________________________________________
-Game State Response
-•	The backend should return enough information for the frontend to render the game correctly.
-•	A game state response should include:
-•	Game ID 
-•	Board state 
-•	Current player 
-•	Game mode 
-•	Game status 
-•	Winner, if any 
-•	Winning cells, if any 
-•	Move history 
-•	Scoreboard or a way to retrieve scoreboard 
-•	Example game statuses:
-•	InProgress 
-•	Won 
-•	Draw 
-________________________________________
-Move Request
-•	When the frontend submits a move, the request should include:
-•	Game ID 
-•	Player 
-•	Row and column, or cell index 
-•	The backend should validate the move.
-•	The backend should reject invalid moves such as:
-•	Move outside the board 
-•	Move on an occupied cell 
-•	Move after game completion 
-•	Move by the wrong player 
-________________________________________
-Frontend Requirements
-•	The Angular application should provide a clean and usable interface.
-•	The UI should show:
-•	Game board 
-•	Current player 
-•	Selected game mode 
-•	Winner or draw message 
-•	Highlighted winning cells 
-•	Move history 
-•	Scoreboard 
-•	Reset Game button 
-•	Undo Last Move button 
-•	Reset Scoreboard button 
-•	The frontend should call the backend APIs for game actions and render the latest state returned by the backend.
-•	The UI should be responsive enough to use comfortably on a laptop browser.
-________________________________________
-Important Clarifications
-Clarification 1: Backend State Ownership
-•	The backend should be the source of truth for the current game state.
-•	The frontend may maintain UI state, but game rules, move validation, game status, move history, and score-board should be consistent with the backend response.
-________________________________________
-Clarification 2: Scoreboard and Undo
-•	The scoreboard should remain consistent after game completion.
-•	Use one of the following approaches and mention the choice in the README:
-Option A: Disable Undo After Completion
-•	Once a game is won or drawn, Undo is disabled.
-•	The scoreboard remains final for that game.
-Option B: Allow Undo After Completion
-•	Undo can be used after a game is completed.
-•	If the completed result is reversed through Undo, the scoreboard should also be adjusted correctly.
-________________________________________
-Testing Expectations
-•	Include tests for the core game logic.
-•	At minimum, cover:
-•	Valid move 
-•	Invalid move 
-•	Turn switching 
-•	Row win 
-•	Column win 
-•	Diagonal win 
-•	Draw 
-•	Reset game 
-•	Undo in two-player mode 
-•	Undo in computer mode 
-•	Scoreboard update 
-•	Computer move selection 
-•	Move after game completion 
-•	Backend unit tests are preferred for game rules and state transitions.
-•	Frontend tests may cover component rendering and API integration points.
-________________________________________
-AI-Assisted Development Expectation
-•	You may use AI-assisted development tools to build the solution.
-•	During submission and review, be prepared to explain:
-•	How you converted the requirement into a specification 
-•	What prompts you used 
-•	What the AI generated 
-•	What you changed manually 
-•	Which parts you reviewed carefully 
-•	What assumptions you made 
-•	What trade-offs you chose 
-•	The final submission should reflect your own understanding and engineering judgment.
-________________________________________
-README Expectations
-•	Your GitHub repository should include a clear README with:
-1.	Project overview 
-2.	Tech stack 
-3.	Features implemented 
-4.	How to run the backend locally 
-5.	How to run the frontend locally 
-6.	API endpoint summary 
-7.	How to run tests 
-8.	AI tools and prompt summary 
-9.	Design decisions 
-10.	Clarifications and assumptions 
-11.	Known limitations 
-12.	Future improvements 
-________________________________________
-Submission Requirements
-•	Submit a GitHub repository containing:
-•	Angular frontend source code 
-•	.NET backend source code 
-•	README.md 
-•	Setup and run instructions 
-•	Test instructions 
-•	Prompt summary or AI workflow notes 
-•	API documentation or endpoint summary 
-•	Known assumptions and limitations 
-________________________________________
-Acceptance Criteria
-•	The exercise is considered complete when:
-•	The Angular application runs locally 
-•	The .NET API runs locally 
-•	The frontend communicates with the backend through REST APIs 
-•	A new Tic Tac Toe game can be created 
-•	Two Player Mode works correctly 
-•	Computer Mode works correctly 
-•	Turns alternate correctly 
-•	Invalid moves are handled correctly 
-•	Win detection works 
-•	Draw detection works 
-•	Winning cells are highlighted 
-•	Move history is shown 
-•	Undo works according to the selected mode 
-•	Scoreboard works correctly 
-•	Reset Game works correctly 
-•	Reset Scoreboard works correctly 
-•	Basic tests are included 
-•	README explains how to run and review the solution 
-•	Candidate can explain the implementation during panel review
+A full-stack Tic Tac Toe application built as part of the Round 2 coding assessment.
 
+The application supports **Two Player** and **Play Against Computer** modes. The Angular frontend provides the user interface, while the ASP.NET Core Web API manages game state, validates moves, applies game rules, handles move history and undo, and maintains the session scoreboard.
 
+---
+
+## 1. Project Overview
+
+This project implements a browser-based Tic Tac Toe game on a standard **3 × 3 board**.
+
+### Game Modes
+
+* **Two Player Mode**
+
+  * Player X and Player O play alternately.
+  * Both players interact with the same board.
+
+* **Play Against Computer Mode**
+
+  * The human player controls X.
+  * The computer controls O.
+  * The backend automatically generates the computer's move after a valid X move.
+
+### Additional Functionality
+
+* Win detection
+* Draw detection
+* Winning-cell highlighting
+* Move history
+* Undo
+* Session scoreboard
+* Reset Game
+* Reset Scoreboard
+* REST API communication
+* Backend validation
+* Automated unit tests
+
+---
+
+## 2. Tech Stack
+
+### Frontend
+
+* Angular
+* TypeScript
+* HTML5
+* SCSS
+* RxJS
+* Angular HttpClient
+
+### Backend
+
+* ASP.NET Core Web API
+* C#
+* .NET
+* REST APIs
+* Swagger / OpenAPI
+
+### Testing
+
+* xUnit
+* .NET Test Framework
+
+### Development Tools
+
+* Node.js
+* npm
+* Angular CLI
+* .NET CLI
+* Git
+* GitHub
+
+---
+
+## 3. Features Implemented
+
+### Game Board
+
+* Standard 3 × 3 Tic Tac Toe board.
+* X and O player markers.
+* Occupied cells cannot be selected again.
+* Backend maintains the authoritative game state.
+
+### Two Player Mode
+
+Players alternate turns:
+
+```text
+X → O → X → O → ...
+```
+
+The backend validates that the correct player is making each move.
+
+### Computer Mode
+
+The human controls X and the computer controls O.
+
+The computer follows this priority:
+
+1. Win if possible.
+2. Block X if X can win on the next move.
+3. Take the center.
+4. Take an available corner.
+5. Take any remaining available cell.
+
+### Win Detection
+
+The backend detects:
+
+* Horizontal wins
+* Vertical wins
+* Diagonal wins
+
+Winning cells are returned by the API and highlighted in the UI.
+
+### Draw Detection
+
+If all nine cells are occupied and there is no winner, the game is marked as a draw.
+
+### Move History
+
+Every valid move records:
+
+* Move number
+* Player
+* Row
+* Column
+
+### Undo
+
+#### Two Player Mode
+
+Undo removes the most recent move.
+
+#### Computer Mode
+
+Undo removes the human move and the corresponding computer move, returning the game to the previous human decision point.
+
+#### Completed Games
+
+Undo is disabled after a game has been completed.
+
+### Scoreboard
+
+The application tracks:
+
+* X wins
+* O wins
+* Draws
+
+The scoreboard persists while the backend process is running.
+
+### Reset Game
+
+Starts a new game without changing the scoreboard.
+
+### Reset Scoreboard
+
+Resets:
+
+```text
+X Wins = 0
+O Wins = 0
+Draws  = 0
+```
+
+### Backend Validation
+
+The backend validates:
+
+* Player
+* Turn
+* Row
+* Column
+* Cell availability
+* Game status
+* Computer-controlled player restrictions
+
+---
+
+## 4. How to Run the Backend Locally
+
+### Prerequisites
+
+Install the .NET SDK.
+
+Verify the installation:
+
+```bash
+dotnet --version
+```
+
+### Start the Backend
+
+Navigate to the API project:
+
+```bash
+cd backend/TicTacToe.Api
+```
+
+Restore dependencies:
+
+```bash
+dotnet restore
+```
+
+Run the application:
+
+```bash
+dotnet run
+```
+
+The backend runs on:
+
+```text
+http://localhost:5171
+```
+
+### Swagger
+
+Swagger is available at:
+
+```text
+http://localhost:5171/swagger
+```
+
+---
+
+## 5. How to Run the Frontend Locally
+
+### Prerequisites
+
+Install:
+
+* Node.js
+* npm
+* Angular CLI
+
+Verify the installation:
+
+```bash
+node --version
+npm --version
+ng version
+```
+
+### Install Dependencies
+
+Navigate to the Angular project:
+
+```bash
+cd frontend/TicTacToe
+```
+
+Install packages:
+
+```bash
+npm install
+```
+
+### Start the Frontend
+
+Run:
+
+```bash
+ng serve
+```
+
+The Angular application runs on:
+
+```text
+http://localhost:4200
+```
+
+Open the application in a browser:
+
+```text
+http://localhost:4200
+```
+
+### Backend API Configuration
+
+The Angular application communicates with the backend using:
+
+```typescript
+private readonly apiUrl = 'http://localhost:5171/api';
+```
+
+This configuration is located in:
+
+```text
+src/app/game.service.ts
+```
+
+---
+
+## 6. API Endpoint Summary
+
+### API Base URL
+
+```text
+http://localhost:5171/api
+```
+
+### Create Game
+
+```http
+POST /api/games
+```
+
+Request:
+
+```json
+{
+  "mode": "TwoPlayer"
+}
+```
+
+or:
+
+```json
+{
+  "mode": "Computer"
+}
+```
+
+Creates a new game and returns the initial game state.
+
+---
+
+### Get Game
+
+```http
+GET /api/games/{gameId}
+```
+
+Returns the current game state.
+
+Example:
+
+```json
+{
+  "gameId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "board": [
+    "X", "", "",
+    "", "O", "",
+    "", "", ""
+  ],
+  "currentPlayer": "X",
+  "mode": "TwoPlayer",
+  "status": "InProgress",
+  "winner": null,
+  "winningCells": [],
+  "moveHistory": []
+}
+```
+
+---
+
+### Make Move
+
+```http
+POST /api/games/{gameId}/moves
+```
+
+Request:
+
+```json
+{
+  "player": "X",
+  "row": 0,
+  "column": 1
+}
+```
+
+Rows and columns are zero-based.
+
+Example:
+
+```text
+0,0 | 0,1 | 0,2
+----+-----+----
+1,0 | 1,1 | 1,2
+----+-----+----
+2,0 | 2,1 | 2,2
+```
+
+In Computer Mode, a valid X move automatically triggers the backend to generate the O move.
+
+---
+
+### Undo
+
+```http
+POST /api/games/{gameId}/undo
+```
+
+Behaviour:
+
+* Two Player Mode → removes one move.
+* Computer Mode → removes the human and computer move pair.
+* Completed games → undo is rejected.
+
+---
+
+### Reset Game
+
+```http
+POST /api/games/{gameId}/reset
+```
+
+Starts a new game using the same game mode.
+
+The scoreboard is not reset.
+
+---
+
+### Get Scoreboard
+
+```http
+GET /api/scoreboard
+```
+
+Example response:
+
+```json
+{
+  "xWins": 3,
+  "oWins": 2,
+  "draws": 1
+}
+```
+
+---
+
+### Reset Scoreboard
+
+```http
+POST /api/scoreboard/reset
+```
+
+Resets all scoreboard values to zero.
+
+---
+
+## 7. How to Run Tests
+
+Navigate to the backend directory:
+
+```bash
+cd backend
+```
+
+Run all tests:
+
+```bash
+dotnet test
+```
+
+The tests cover the core game functionality, including:
+
+* Valid moves
+* Invalid moves
+* Occupied cells
+* Turn switching
+* Row wins
+* Column wins
+* Diagonal wins
+* Draw detection
+* Completed-game validation
+* Two Player undo
+* Computer Mode undo
+* Computer move selection
+* Scoreboard behaviour
+* Reset behaviour
+
+---
+
+## 8. AI Tools and Prompt Summary
+
+AI tools were used as a development assistant during implementation.
+
+### AI-Assisted Areas
+
+AI assistance was used for:
+
+* Project scaffolding
+* Angular component structure
+* ASP.NET Core API structure
+* Models and DTOs
+* Game-rule implementation
+* Computer move strategy
+* Unit-test scenarios
+* Debugging TypeScript and Angular configuration issues
+* Documentation
+
+### Representative Prompts
+
+```text
+Create an Angular frontend for a Tic Tac Toe application with
+Two Player and Computer modes.
+```
+
+```text
+Implement an ASP.NET Core service that validates Tic Tac Toe moves,
+detects row, column and diagonal wins, and detects draws.
+```
+
+```text
+Implement computer move selection using the priority:
+win, block, center, corner, any available cell.
+```
+
+```text
+Implement undo behavior where Two Player mode removes one move
+and Computer mode removes the human and computer move pair.
+```
+
+```text
+Generate unit tests for valid moves, invalid moves, wins,
+draws, undo and computer behaviour.
+```
+
+AI-generated code was reviewed, tested and adjusted manually before being used.
+
+---
+
+## 9. Design Decisions
+
+### Backend as the Source of Truth
+
+The backend owns:
+
+* Board state
+* Current player
+* Game status
+* Winner
+* Winning cells
+* Move history
+* Computer moves
+* Scoreboard
+
+The Angular application is responsible primarily for presentation and user interaction.
+
+This prevents clients from bypassing game rules through client-side state manipulation.
+
+### REST API
+
+The frontend communicates with the backend through REST endpoints.
+
+Architecture:
+
+```text
+Angular Frontend
+       |
+       | HTTP / REST
+       v
+ASP.NET Core Web API
+       |
+       v
+Game Service
+       |
+       v
+Game State
+```
+
+### In-Memory Storage
+
+Game and scoreboard data are stored in memory.
+
+This keeps the implementation simple and focused on the assessment requirements.
+
+### Computer Strategy
+
+The computer uses the following deterministic priority:
+
+```text
+1. Win
+2. Block
+3. Center
+4. Corner
+5. Any available cell
+```
+
+### Undo Strategy
+
+Undo is disabled after a game is completed.
+
+This prevents completed game results from being retrospectively changed.
+
+### Standalone Angular Architecture
+
+The frontend uses Angular standalone components to keep the application lightweight and minimize unnecessary module configuration.
+
+---
+
+## 10. Clarifications and Assumptions
+
+### Player Assignment
+
+Two Player Mode:
+
+```text
+X → Player 1
+O → Player 2
+```
+
+Computer Mode:
+
+```text
+X → Human
+O → Computer
+```
+
+### Computer Control
+
+The frontend cannot submit an O move in Computer Mode.
+
+The backend generates the O move.
+
+### Board Coordinates
+
+API coordinates are zero-based:
+
+```text
+0,0 | 0,1 | 0,2
+----+-----+----
+1,0 | 1,1 | 1,2
+----+-----+----
+2,0 | 2,1 | 2,2
+```
+
+### Reset Game
+
+Reset Game starts a new game but does not reset the scoreboard.
+
+### Completed Games
+
+Once a game reaches `Won` or `Draw`, additional moves are rejected.
+
+### Persistence
+
+No database is used.
+
+Game and scoreboard data are stored in memory for the lifetime of the backend process.
+
+---
+
+## 11. Known Limitations
+
+### In-Memory Storage
+
+All games and scoreboard data are lost when the backend restarts.
+
+### No Authentication
+
+There is currently no:
+
+* User authentication
+* Authorization
+* User account management
+* Persistent player identity
+
+### Single Session Scoreboard
+
+The scoreboard represents the current backend session.
+
+### Basic Computer AI
+
+The computer uses a deterministic priority strategy rather than minimax.
+
+### Local Multiplayer
+
+Two Player Mode is designed for players using the same running application rather than separate browsers or devices.
+
+### Development CORS
+
+The backend is configured for local Angular development.
+
+Production deployment should use environment-specific CORS configuration.
+
+### Local API Configuration
+
+The frontend currently uses:
+
+```text
+http://localhost:5171/api
+```
+
+A production deployment should use environment-specific API configuration.
+
+---
+
+## 12. Future Improvements
+
+### Database Persistence
+
+Add a database such as:
+
+* SQL Server
+* PostgreSQL
+* SQLite
+
+for persistent game and scoreboard data.
+
+### Authentication
+
+Add user authentication and persistent player statistics.
+
+### Real-Time Multiplayer
+
+Use SignalR or WebSockets to support players on separate browsers or devices.
+
+### Advanced Computer AI
+
+Implement minimax with alpha-beta pruning and difficulty levels:
+
+```text
+Easy
+Medium
+Hard
+```
+
+### Environment Configuration
+
+Use separate configurations for:
+
+```text
+Development
+Test
+Production
+```
+
+### CI/CD
+
+Add GitHub Actions to automatically:
+
+* Restore dependencies
+* Build the backend
+* Build the frontend
+* Run tests
+* Publish artifacts
+
+### Additional Automated Tests
+
+Add:
+
+* Angular component tests
+* API integration tests
+* End-to-end tests
+* Computer strategy tests
+* API error-response tests
+
+### API Error Handling
+
+Introduce centralized exception handling and a consistent API error response model.
+
+### Observability
+
+Add structured logging, health checks and application metrics.
+
+---
+
+## Project Structure
+
+```text
+TicTacToe/
+│
+├── backend/
+│   │
+│   ├── TicTacToe.Api/
+│   │   ├── Controllers/
+│   │   │   ├── GamesController.cs
+│   │   │   └── ScoreboardController.cs
+│   │   │
+│   │   ├── Models/
+│   │   │   └── GameModels.cs
+│   │   │
+│   │   ├── Services/
+│   │   │   ├── GameService.cs
+│   │   │   └── ScoreboardService.cs
+│   │   │
+│   │   └── Program.cs
+│   │
+│   └── TicTacToe.Tests/
+│       └── GameServiceTests.cs
+│
+└── frontend/
+    │
+    └── TicTacToe/
+        ├── src/
+        │   ├── app/
+        │   │   ├── app.component.ts
+        │   │   ├── app.component.html
+        │   │   ├── app.component.scss
+        │   │   ├── game.models.ts
+        │   │   └── game.service.ts
+        │   │
+        │   └── main.ts
+        │
+        ├── angular.json
+        ├── package.json
+        ├── tsconfig.json
+        └── tsconfig.app.json
+```
+
+---
+
+## Quick Start
+
+### Backend
+
+```bash
+cd backend/TicTacToe.Api
+dotnet restore
+dotnet run
+```
+
+Backend:
+
+```text
+http://localhost:5171
+```
+
+Swagger:
+
+```text
+http://localhost:5171/swagger
+```
+
+### Frontend
+
+```bash
+cd frontend/TicTacToe
+npm install
+ng serve
+```
+
+Frontend:
+
+```text
+http://localhost:4200
+```
+
+### Tests
+
+```bash
+cd backend
+dotnet test
+```
+
+---
+
+## Application URLs
+
+| Component            | URL                             |
+| -------------------- | ------------------------------- |
+| Angular Frontend     | `http://localhost:4200`         |
+| ASP.NET Core Backend | `http://localhost:5171`         |
+| Swagger              | `http://localhost:5171/swagger` |
+| REST API             | `http://localhost:5171/api`     |
+
+```
+```
