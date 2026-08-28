@@ -1,0 +1,45 @@
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-width: 190px;
+  max-width: calc(100% - 20px);
+  height: 38px;
+  margin: 0 auto 16px;
+  padding: 0 18px;
+  box-sizing: border-box;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
+}
+
+.status::before {
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: currentColor;
+  content: '';
+}
+
+.status.winner {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.06);
+}
+
+.status.draw {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #b45309;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.06);
+}

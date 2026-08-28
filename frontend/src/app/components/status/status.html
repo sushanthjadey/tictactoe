@@ -1,0 +1,13 @@
+<div class="status" [class.winner]="status() === 'Won'" [class.draw]="status() === 'Draw'">
+  @switch (status()) {
+    @case ('InProgress') {
+      Player {{ currentPlayer() }}'s turn
+    }
+    @case ('Won') {
+      🎉 Player {{ winner() }} wins!
+    }
+    @case ('Draw') {
+      🤝 Game Draw!
+    }
+  }
+</div>

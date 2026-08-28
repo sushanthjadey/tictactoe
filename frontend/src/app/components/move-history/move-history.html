@@ -1,0 +1,19 @@
+<section class="card">
+  <div class="section-header">
+    <h2>Move History</h2>
+    <button type="button" [disabled]="moves().length === 0" (click)="onUndo()">Undo</button>
+  </div>
+  @if (moves().length === 0) {
+    <p class="empty">No moves yet.</p>
+  } @else {
+    <div class="history">
+      @for (move of moves(); track move.number) {
+        <div class="history-row">
+          <span>{{ move.number }}</span>
+          <strong [class.x]="move.player === 'X'" [class.o]="move.player === 'O'">{{ move.player }}</strong>
+          <span>Row {{ move.row + 1 }}, Column {{ move.column + 1 }}</span>
+        </div>
+      }
+    </div>
+  }
+</section>

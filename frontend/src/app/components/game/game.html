@@ -1,0 +1,80 @@
+<div class="page">
+  <div class="container">
+    <header class="header">
+      <h1>Tic Tac Toe</h1>
+    </header>
+
+    <div class="mode-selector">
+      <button
+        type="button"
+        [class.active]="selectedMode === 'TwoPlayer'"
+        [disabled]="isMakingMove"
+        (click)="selectMode('TwoPlayer')">
+        Two Player
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedMode === 'Computer'"
+        [disabled]="isMakingMove"
+        (click)="selectMode('Computer')">
+        Play Against Computer
+      </button>
+    </div>
+
+    @if (game; as currentGame) {
+      <app-status
+        [status]="currentGame.status"
+        [currentPlayer]="currentGame.currentPlayer"
+        [winner]="currentGame.winner">
+      </app-status>
+
+      @if (errorMessage) {
+        <div class="error">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <div class="game-layout">
+        <section class="game-card">
+          <app-board
+            [game]="currentGame"
+            (cellClicked)="onCellClicked($event)">
+          </app-board>
+
+          <div class="actions">
+            <button
+              type="button"
+              class="primary"
+              [disabled]="isResetting"
+              (click)="resetGame()">
+              {{ isResetting ? 'Resetting...' : 'Reset Game' }}
+            </button>
+
+            <button
+              type="button"
+              [disabled]="isMakingMove || currentGame.moveHistory.length === 0 || currentGame.status !== 'InProgress'"
+              (click)="undo()">
+              Undo Last Move
+            </button>
+          </div>
+
+          <div class="game-id">
+            Game ID: {{ currentGame.gameId }}
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <app-scoreboard
+            [scoreboard]="scoreboard"
+            (resetClicked)="resetScoreboard()">
+          </app-scoreboard>
+
+          <app-move-history
+            [moves]="currentGame.moveHistory"
+            (undoClicked)="undo()">
+          </app-move-history>
+        </aside>
+      </div>
+    }
+  </div>
+</div>

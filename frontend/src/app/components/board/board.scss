@@ -1,0 +1,80 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  grid-template-rows: repeat(3, 80px);
+  gap: 5px;
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  box-sizing: border-box;
+  border: 2px solid #dce3eb;
+  border-radius: 9px;
+  background: #fbfcfe;
+  color: #172033;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cell:hover:not(:disabled) {
+  border-color: #93c5fd;
+  background: #f5f9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.08);
+}
+
+.cell:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.cell:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell.x {
+  color: #2563eb;
+}
+
+.cell.o {
+  color: #ef4444;
+}
+
+.cell.winning {
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #15803d;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.08);
+}
+
+@media (max-width: 350px) {
+  .board {
+    grid-template-columns: repeat(3, 72px);
+    grid-template-rows: repeat(3, 72px);
+    width: 226px;
+    height: 226px;
+    gap: 5px;
+  }
+
+  .cell {
+    width: 72px;
+    height: 72px;
+    font-size: 34px;
+  }
+}

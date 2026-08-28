@@ -1,0 +1,95 @@
+.card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card h2 {
+  margin: 0 0 14px;
+  color: #172033;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  margin: 0 0 14px;
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 68px;
+  box-sizing: border-box;
+  padding: 7px 3px;
+  border: 1px solid #e4e9ef;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.value {
+  color: #172033;
+  font-size: 23px;
+  font-weight: 750;
+  line-height: 1;
+}
+
+.label {
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.score:nth-child(1) {
+  border-top: 2px solid #2563eb;
+}
+
+.score:nth-child(2) {
+  border-top: 2px solid #ef4444;
+}
+
+.score:nth-child(3) {
+  border-top: 2px solid #f59e0b;
+}
+
+.score:nth-child(1) .value {
+  color: #2563eb;
+}
+
+.score:nth-child(2) .value {
+  color: #ef4444;
+}
+
+.score:nth-child(3) .value {
+  color: #d97706;
+}
+
+.danger {
+  width: 100%;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+
+.danger:hover {
+  border-color: #f87171;
+  background: #fff5f5;
+}
