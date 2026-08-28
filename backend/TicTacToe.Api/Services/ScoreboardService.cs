@@ -1,11 +1,11 @@
 using TicTacToe.Api.Models.GameModels;
 namespace TicTacToe.Api.Services;
 
-public class ScoreboardService
+public class ScoreboardService: IScoreboardService
 {
     private readonly Scoreboard scoreboard = new();
 
-    public Scoreboard Get()
+    Scoreboard IScoreboardService.Get()
     {
         return new Scoreboard
         {
@@ -15,7 +15,7 @@ public class ScoreboardService
         };
     }
 
-    public void AddWin(string player)
+    void IScoreboardService.AddWin(string player)
     {
         if (player == "X")
             scoreboard.XWins++;
@@ -24,12 +24,12 @@ public class ScoreboardService
             scoreboard.OWins++;
     }
 
-    public void AddDraw()
+    void IScoreboardService.AddDraw()
     {
         scoreboard.Draws++;
     }
 
-    public void Reset()
+    void IScoreboardService.Reset()
     {
         scoreboard.XWins = 0;
         scoreboard.OWins = 0;

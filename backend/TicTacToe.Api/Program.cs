@@ -1,14 +1,13 @@
 using TicTacToe.Api.Services;
 
-var builder =
-    WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ScoreboardService>();
-builder.Services.AddSingleton<GameService>();
+builder.Services.AddSingleton<IScoreboardService, ScoreboardService>();
+builder.Services.AddSingleton<IGameService, GameService>();
 
 builder.Services.AddCors(options =>
 {
@@ -17,8 +16,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins(
-                    "http://localhost:4200")
+                .WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
