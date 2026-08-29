@@ -1,4 +1,4 @@
-# Tic Tac Toe – Round 2
+# Tic Tac Toe
 
 A full-stack Tic Tac Toe application built as part of the Round 2 coding assessment.
 
